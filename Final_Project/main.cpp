@@ -5,15 +5,16 @@ GLMmodel * head = NULL;
 GLMmodel * body = NULL;
 GLMmodel * rightarm = NULL;
 GLMmodel * righthand = NULL;
-int show[4] = {1,0,0,0};
+int show[4] = {1,1,1,1};
+int ID = 2;
 float teapotX = 0, teapotY = 0;
 FILE * fout = NULL;
 FILE * fin = NULL;
 void keyboard(unsigned char key, int x, int y){
-    if(key=='0') show[0] = ! show[0];
-    if(key=='1') show[1] = ! show[1];
-    if(key=='2') show[2] = ! show[2];
-    if(key=='3') show[3] = ! show[3];
+    if(key=='0') ID = 0;
+    if(key=='1') ID = 1;
+    if(key=='2') ID = 2;
+    if(key=='3') ID = 3;
     glutPostRedisplay();
 }
 void display()
@@ -30,10 +31,22 @@ void display()
         glScalef(0.3, 0.3, 0.3);
         glPushMatrix();
             glTranslatef(teapotX, teapotY, 0);
+
+            if(ID==0) glColor3f(1,0,0);
+            else glColor3f(1,1,1);
             if (show[0]) glmDraw(head, GLM_MATERIAL);
         glPopMatrix();
+
+        if(ID==1) glColor3f(1,0,0);
+        else glColor3f(1,1,1);
         if (show[1]) glmDraw(body, GLM_MATERIAL);
+
+        if(ID==2) glColor3f(1,0,0);
+        else glColor3f(1,1,1);
         if (show[2]) glmDraw(rightarm, GLM_MATERIAL);
+
+        if(ID==3) glColor3f(1,0,0);
+        else glColor3f(1,1,1);
         if (show[3]) glmDraw(righthand, GLM_MATERIAL);
     glPopMatrix();
     glutSwapBuffers();
