@@ -37,7 +37,7 @@ static void resize(int width, int height)
     gluPerspective(60, ar, 0.01, 1000);
 
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity() ;///設程單位矩陣
+    glLoadIdentity();///設程單位矩陣
 }
 
 static void display(void)
