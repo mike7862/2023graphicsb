@@ -1,102 +1,256 @@
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+#include <opencv/cv.h>
 #include <stdio.h>
 #include <GL/glut.h>
 #include "glm.h"
 GLMmodel * head = NULL;
-GLMmodel * body = NULL;
-GLMmodel * rightarm = NULL;
-GLMmodel * righthand = NULL;
-int show[4] = {1,1,1,1};
-int ID = 2;
-///float angle = 0;
-float angle[20] = {};
-float teapotX = 0, teapotY = 0;
+GLMmodel * body = NULL; ///GLMmodel * gundam = NULL;
+GLMmodel * leftarm = NULL, * rightarm = NULL;
+GLMmodel * lefthand = NULL, * righthand = NULL;
+GLMmodel * leftleg = NULL, * rightleg = NULL;
+GLMmodel * leftfoot = NULL, * rightfoot = NULL;
+
+float teapotX = 0, teapotY = 0, oldX = 0, oldY = 0;
+float angle[20] = {}, angle2[20] = {};///float angle = 0, angle2 = 0;
+float NewAngle[20] = {}, NewAngle2[20] = {};
+float OldAngle[20] = {}, OldAngle2[20] = {};
+int ID = 0;
 FILE * fout = NULL;
 FILE * fin = NULL;
-void keyboard(unsigned char key, int x, int y){
+
+void timer(int t) {
+    printf("現在timer(%d)\n", t);
+    glutTimerFunc(20, timer, t+1); ///馬上設定下一個鬧鐘
+
+    float alpha = (t%50) / 50.0; ///0.0 ~ 1.0
+
+    if(t%50==0){
+        if(fin == NULL) fin = fopen("motion.txt", "r");
+        for(int i=0; i<20; i++){
+            OldAngle[i] = NewAngle[i];
+            OldAngle2[i] = NewAngle2[i];
+            fscanf(fin, "%f", &NewAngle[i] );
+            fscanf(fin, "%f", &NewAngle2[i] );
+        }
+    }
+    for(int i=0; i<20; i++){
+        angle[i] = NewAngle[i] * alpha + OldAngle[i] * (1-alpha);
+        angle2[i] = NewAngle2[i] * alpha + OldAngle2[i] * (1-alpha);
+    }
+
+    glutPostRedisplay();
+}
+
+void keyboard(unsigned char key, int x, int y) {
     if(key=='0') ID = 0;
     if(key=='1') ID = 1;
     if(key=='2') ID = 2;
     if(key=='3') ID = 3;
-    glutPostRedisplay();
-}
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    if(head==NULL){
-        head = glmReadOBJ("model/head.obj");
-        body = glmReadOBJ("model/body.obj");
-        rightarm = glmReadOBJ("model/rightarm.obj");
-        righthand = glmReadOBJ("model/righthand.obj");
-        ///glmUnitize(head);
+    if(key=='4') ID = 4;
+    if(key=='5') ID = 5;
+    if(key=='6') ID = 6;
+    if(key=='7') ID = 7;
+    if(key=='8') ID = 8;
+    if(key=='9') ID = 9;
+    if(key=='s'){ ///save存檔 也會動到檔案
+        if(fout == NULL) fout = fopen("motion.txt", "w");
+        for(int i=0; i<20; i++){
+            fprintf(fout, "%.2f ", angle[i] );
+            fprintf(fout, "%.2f ", angle2[i] );
+        }
+        fprintf(fout, "\n");
+        printf("寫了一行\n");
     }
-    glPushMatrix();
-        glScalef(0.3, 0.3, 0.3);
-        glPushMatrix();
-            //glTranslatef(teapotX, teapotY, 0);
-
-            if(ID==0) glColor3f(1,0,0);
-            else glColor3f(1,1,1);
-            if (show[0]) glmDraw(head, GLM_MATERIAL);
-        glPopMatrix();
-
-        if(ID==1) glColor3f(1,0,0);
-        else glColor3f(1,1,1);
-        if (show[1]) glmDraw(body, GLM_MATERIAL);
-
-        glPushMatrix();
-            glTranslatef(teapotX, teapotY, 0);
-            ///glTranslatef(+1.300000, +0.540000, 0);
-            ///glRotatef(angle[2], 0, 0, 1);
-            ///glTranslatef(-1.300000, -0.540000, 0);
-
-            if(ID==2) glColor3f(1,0,0);
-            else glColor3f(1,1,1);
-            if (show[2]) glmDraw(rightarm, GLM_MATERIAL);
-
-
-            glPushMatrix();
-                glTranslatef(teapotX, teapotY, 0);
-                ///glTranslatef(1.939999, 0.020000, 0);
-                ///glRotatef(angle[3], 0, 0, 1);
-                ///glTranslatef(-1.939999, -0.020000, 0);
-                if(ID==3) glColor3f(1,0,0);
-                else glColor3f(1,1,1);
-                if (show[3]) glmDraw(righthand, GLM_MATERIAL);
-            glPopMatrix();
-        glPopMatrix();
-
-    glPopMatrix();
-    glColor3f(0,1,0);
-    glutSolidTeapot( 0.02 );
-    glutSwapBuffers();
-}
-int oldX=0, oldY=0;
-void  mouse(int button,int state,int x,int y)
-{
-    if(state==GLUT_DOWN){
-        oldX = x;
-        oldY = y;
+    if(key=='r'){ ///read讀檔 也會動到檔案
+        if(fin == NULL) fin = fopen("motion.txt", "r");
+        for(int i=0; i<20; i++){
+            fscanf(fin, "%f", &angle[i] );
+            fscanf(fin, "%f", &angle2[i] );
+        }
+        glutPostRedisplay();
+    }
+    if(key=='p'){ ///play播放 也會動到檔案
+        glutTimerFunc(0, timer, 0);
     }
 }
-void motion(int x, int y){
-    teapotX += (x - oldX)/150.0*3;
-    teapotY -= (y - oldY)/150.0*3;
-    printf("glTranslatef(%f, %f, 0);\n", teapotX, teapotY);
-    angle[ID] += x-oldX;
+
+int myTexture(char * filename)
+{
+    IplImage * img = cvLoadImage(filename); ///OpenCV讀圖
+    cvCvtColor(img,img, CV_BGR2RGB); ///OpenCV轉色彩 (需要cv.h)
+    glEnable(GL_TEXTURE_2D); ///1. 開啟貼圖功能
+    GLuint id; ///準備一個 unsigned int 整數, 叫 貼圖ID
+    glGenTextures(1, &id); /// 產生Generate 貼圖ID
+    glBindTexture(GL_TEXTURE_2D, id); ///綁定bind 貼圖ID
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); /// 貼圖參數, 超過包裝的範圖T, 就重覆貼圖
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); /// 貼圖參數, 超過包裝的範圖S, 就重覆貼圖
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); /// 貼圖參數, 放大時的內插, 用最近點
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); /// 貼圖參數, 縮小時的內插, 用最近點
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+    return id;
+}
+void mouse(int button, int state, int x, int y) {
+    oldX = x;
+    oldY = y;
+}
+void motion(int x, int y) {
+    teapotX += (x - oldX) / 150.0 * 10; ///teapotX = (x-150)/150.0;
+    teapotY += (oldY - y) / 150.0 * 10; ///teapotY = (150-y)/150.0;
+    angle[ID] += x - oldX;
+    angle2[ID] += oldY - y;
     oldX = x;
     oldY = y;
     glutPostRedisplay();
+    printf("  glTranslatef( %.2f, %.2f, 0 ); \n", teapotX, teapotY );
 }
-int main(int argc,char** argv)
-{
-    glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
-    glutCreateWindow("week14");
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+        glScalef(1.6, 1.6, 1.6);
+        glTranslatef(0, -0.5, 0);///往下一半
+        glPushMatrix();
+            glColor3f(1,1,1);
+            glScalef(0.04, 0.04, 0.04);
+            glRotatef(angle[0], 0, 1, 0); ///身體的轉動
+            glmDraw(body, GLM_MATERIAL|GLM_TEXTURE);///glmDraw(gundam, GLM_MATERIAL|GLM_TEXTURE);
 
-    glutMotionFunc(motion);
+            glPushMatrix();///左手
+                ///glTranslatef(-4.07, +21.33, 0 );
+                ///glRotatef(angle[1], 0, 1, 0);
+                ///glRotatef(angle2[1], 1, 0, 0);
+                ///glTranslatef( 4.07, -21.33, 0 );
+                glTranslatef(teapotX, teapotY, 0);
+                glmDraw(leftarm, GLM_MATERIAL|GLM_TEXTURE);
+
+                glPushMatrix();
+                    ///glTranslatef(-4.40, +18.53, 0 );
+                    ///glRotatef(angle[2], 0, 1, 0);
+                    ///glRotatef(angle2[2], 1, 0, 0);
+                    ///glTranslatef( 4.40, -18.53, 0 );
+                    glTranslatef(teapotX, teapotY, 0);
+                    glmDraw(lefthand, GLM_MATERIAL|GLM_TEXTURE);
+                glPopMatrix();
+            glPopMatrix();
+
+
+            glPushMatrix();///右手
+                ///glTranslatef(+4.07, +21.33, 0 );
+                ///glRotatef(angle[3], 0, 1, 0);
+                ///glRotatef(angle2[3], 1, 0, 0);
+                ///glTranslatef(-4.07, -21.33, 0 );
+                glTranslatef(teapotX, teapotY, 0);
+                glmDraw(rightarm, GLM_MATERIAL|GLM_TEXTURE);
+
+                glPushMatrix();
+                    ///glTranslatef(+4.40, +18.53, 0 );
+                    ///glRotatef(angle[4], 0, 1, 0);
+                    ///glRotatef(angle2[4], 1, 0, 0);
+                    ///glTranslatef(-4.40, -18.53, 0 );
+                    glTranslatef(teapotX, teapotY, 0);
+                    glmDraw(righthand, GLM_MATERIAL|GLM_TEXTURE);
+                glPopMatrix();
+            glPopMatrix();
+
+            glPushMatrix();
+                ///glTranslatef(-0.00, +22.53, 0 );
+                ///glRotatef(angle[5], 0, 1, 0);
+                ///glRotatef(angle2[5], 1, 0, 0);
+                ///glTranslatef( 0.00, -22.53, 0 );
+                glTranslatef(teapotX, teapotY, 0);
+                glmDraw(head, GLM_MATERIAL|GLM_TEXTURE);
+            glPopMatrix();
+
+
+
+
+
+                glPushMatrix();///左腳
+                    ///glTranslatef(-2.00, +14.27, 0 );
+                    ///glRotatef(angle[6], 0, 1, 0);
+                    ///glRotatef(angle2[6], 1, 0, 0);
+                    ///glTranslatef( 2.00, -14.27, 0 );
+                    glTranslatef(teapotX, teapotY, 0);
+                    glmDraw(leftleg, GLM_MATERIAL|GLM_TEXTURE);
+
+
+
+                        glPushMatrix();
+                            ///glTranslatef(-2.13, +2.40, 0 );
+                            ///glRotatef(angle[8], 0, 1, 0);
+                            ///glRotatef(angle2[8], 1, 0, 0);
+                            ///glTranslatef( 2.13, -2.40, 0 );
+                            glTranslatef(teapotX, teapotY, 0);
+                            glmDraw(leftfoot, GLM_MATERIAL|GLM_TEXTURE);
+                        glPopMatrix();
+                    glPopMatrix();
+                glPopMatrix();
+            glPopMatrix();
+
+
+
+
+                glPushMatrix();///右腳
+                    ///glTranslatef(+2.00, +14.27, 0 );
+                    ///glRotatef(angle[9], 0, 1, 0);
+                    ///glRotatef(angle2[9], 1, 0, 0);
+                    ///glTranslatef(-2.00, -14.27, 0 );
+                    glTranslatef(teapotX, teapotY, 0);
+                    glmDraw(rightleg, GLM_MATERIAL|GLM_TEXTURE);
+
+
+
+                        glPushMatrix();
+                            ///glTranslatef(+2.13, +2.40, 0 );
+                            ///glRotatef(angle[11], 0, 1, 0);
+                            ///glRotatef(angle2[11], 1, 0, 0);
+                            ///glTranslatef(-2.13, -2.40, 0 );
+                            glTranslatef(teapotX, teapotY, 0);
+                            glmDraw(rightfoot, GLM_MATERIAL|GLM_TEXTURE);
+                        glPopMatrix();
+                    glPopMatrix();
+                glPopMatrix();
+            glPopMatrix();
+
+        glPopMatrix();
+
+
+
+
+        glColor3f(0,1,0);
+        glutSolidTeapot( 0.02 );
+
+    glPopMatrix();
+    glutSwapBuffers();
+}
+
+int main(int argc, char** argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
+    glutInitWindowSize(500,500);
+    glutCreateWindow("week16");
+
     glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
+    glutMotionFunc(motion);
     glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
+
+    head = glmReadOBJ("model/head.obj");
+    body = glmReadOBJ("model/body.obj"); ///gundam = glmReadOBJ("model/Gundam.obj");
+    leftarm = glmReadOBJ("model/leftarm.obj");
+    rightarm = glmReadOBJ("model/rightarm.obj");
+    lefthand = glmReadOBJ("model/lefthand.obj");
+    righthand = glmReadOBJ("model/righthand.obj");
+
+    leftleg = glmReadOBJ("model/leftleg.obj");
+    rightleg = glmReadOBJ("model/rightleg.obj");
+
+
+    leftfoot = glmReadOBJ("model/leftfoot.obj");
+    rightfoot = glmReadOBJ("model/rightfoot.obj");
+
+
+    glEnable(GL_DEPTH_TEST);
 
     glutMainLoop();
 }
