@@ -124,7 +124,6 @@ void display() {
                 glRotatef(angle2[1], 1, 0, 0);
                 glTranslatef( -2.67, -14.80, 0 );
                 ///glTranslatef(teapotX, teapotY, 0);
-                glColor3f(1,1,0);
                 glmDraw(arm1, GLM_MATERIAL|GLM_TEXTURE);
 
                 glPushMatrix();
@@ -239,9 +238,12 @@ void display() {
     glPopMatrix();
     glutSwapBuffers();
 }
-
+#include "CMP3_MCI.h"
+CMP3_MCI myMP3;
 int main(int argc, char** argv)
 {
+    myMP3.Load("suzume.mp3");
+    myMP3.Play();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
     glutInitWindowSize(500,500);
@@ -266,7 +268,7 @@ int main(int argc, char** argv)
     foot1 = glmReadOBJ("model/foot1.obj");
     foot2 = glmReadOBJ("model/foot2.obj");
 
-    ///myTexture("model/Diffuse.jpg");
+    myTexture("model/galaxy.jpg");
     glEnable(GL_DEPTH_TEST);
 
     glutMainLoop();
