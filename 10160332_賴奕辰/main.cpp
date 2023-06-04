@@ -54,8 +54,8 @@ void keyboard(unsigned char key, int x, int y) {
     if(key=='7') ID = 7;
     if(key=='8') ID = 8;
     if(key=='9') ID = 9;
-    if(key=='a') ID = a;
-    if(key=='b') ID = b;
+    if(key=='a') ID = 10;
+    if(key=='b') ID = 11;
     if(key=='s'){ ///save存檔 也會動到檔案
         if(fout == NULL) fout = fopen("motion.txt", "w");
         for(int i=0; i<20; i++){
@@ -209,16 +209,16 @@ void display() {
 
                     glPushMatrix();
                         glTranslatef( -1.00, +4.67, 0 );
-                        glRotatef(angle[a], 0, 1, 0);
-                        glRotatef(angle2[a], 1, 0, 0);
+                        glRotatef(angle[10], 0, 1, 0);
+                        glRotatef(angle2[10], 1, 0, 0);
                         glTranslatef( 1.00, -4.67, 0 );
                         ///glTranslatef(teapotX, teapotY, 0);
                         glmDraw(knee2, GLM_MATERIAL|GLM_TEXTURE);
 
                         glPushMatrix();
                             glTranslatef( -1.07, +0.20, 0 );
-                            glRotatef(angle[b], 0, 1, 0);
-                            glRotatef(angle2[b], 1, 0, 0);
+                            glRotatef(angle[11], 0, 1, 0);
+                            glRotatef(angle2[11], 1, 0, 0);
                             glTranslatef( 1.07, -0.20, 0 );
                             ///glTranslatef(teapotX, teapotY, 0);
                             glmDraw(foot2, GLM_MATERIAL|GLM_TEXTURE);
@@ -242,7 +242,7 @@ void display() {
 CMP3_MCI myMP3;
 int main(int argc, char** argv)
 {
-    myMP3.Load("suzume.mp3");
+    myMP3.Load("1.mp3");
     myMP3.Play();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);

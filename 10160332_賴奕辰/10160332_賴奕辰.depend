@@ -24,11 +24,16 @@
 	<GL/glu.h>
 	<stdlib.h>
 
-1685847973 source:c:\users\mikel\onedrive\®à­±\2023graphicsb\10160332_¿à«³¨°\main.cpp
+1685874319 source:c:\users\mikel\onedrive\®à­±\2023graphicsb\10160332_¿à«³¨°\main.cpp
 	<opencv/highgui.h>
 	<opencv/cv.h>
 	<stdio.h>
 	<GL/glut.h>
 	"glm.h"
+	"CMP3_MCI.h"
+
+1685863420 c:\users\mikel\onedrive\®à­±\2023graphicsb\10160332_¿à«³¨°\cmp3_mci.h
+	<string>
 	<windows.h>
+	<mmsystem.h>
 
