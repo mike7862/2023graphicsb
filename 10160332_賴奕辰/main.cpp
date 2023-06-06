@@ -124,19 +124,17 @@ void display() {
                 glRotatef(angle2[1], 1, 0, 0);
                 glTranslatef( -2.67, -14.80, 0 );
                 ///glTranslatef(teapotX, teapotY, 0);
-                glColor3f(0,1,1);
                 glmDraw(arm1, GLM_MATERIAL|GLM_TEXTURE);
-            glPopMatrix();
+
                 glPushMatrix();
                     glTranslatef( +4.13, +12.13, 0 );
                     glRotatef(angle[2], 0, 1, 0);
                     glRotatef(angle2[2], 1, 0, 0);
                     glTranslatef( -4.13, -12.13, 0 );
                     ///glTranslatef(teapotX, teapotY, 0);
-                    glColor3f(1,1,0);
                     glmDraw(hand1, GLM_MATERIAL|GLM_TEXTURE);
                 glPopMatrix();
-
+            glPopMatrix();
 
 
             glPushMatrix();///¥k¤â
@@ -145,7 +143,6 @@ void display() {
                 glRotatef(angle2[3], 1, 0, 0);
                 glTranslatef( 2.53, -15.00, 0 );
                 ///glTranslatef(teapotX, teapotY, 0);
-                glColor3f(0,1,1);
                 glmDraw(arm2, GLM_MATERIAL|GLM_TEXTURE);
 
                 glPushMatrix();
@@ -154,7 +151,6 @@ void display() {
                     glRotatef(angle2[4], 1, 0, 0);
                     glTranslatef( 3.80, -12.13, 0 );
                     ///glTranslatef(teapotX, teapotY, 0);
-                    glColor3f(1,1,0);
                     glmDraw(hand2, GLM_MATERIAL|GLM_TEXTURE);
                 glPopMatrix();
             glPopMatrix();
@@ -165,7 +161,6 @@ void display() {
                 glRotatef(angle2[5], 1, 0, 0);
                 glTranslatef( -0.13, -15.73, 0 );
                 ///glTranslatef(teapotX, teapotY, 0);
-                glColor3f(1,0,1);
                 glmDraw(head, GLM_MATERIAL|GLM_TEXTURE);
             glPopMatrix();
 
@@ -179,9 +174,7 @@ void display() {
                     glRotatef(angle2[6], 1, 0, 0);
                     glTranslatef( -1.07, -8.67, 0 );
                     ///glTranslatef(teapotX, teapotY, 0);
-                    glColor3f(1,0,0);
                     glmDraw(leg1, GLM_MATERIAL|GLM_TEXTURE);
-                glPopMatrix();
 
                     glPushMatrix();
                         glTranslatef( +1.20, +4.60, 0 );
@@ -189,9 +182,7 @@ void display() {
                         glRotatef(angle2[7], 1, 0, 0);
                         glTranslatef( -1.20, -4.60, 0 );
                         ///glTranslatef(teapotX, teapotY, 0);
-                        glColor3f(0,1,0);
                         glmDraw(knee1, GLM_MATERIAL|GLM_TEXTURE);
-
 
                         glPushMatrix();
                             glTranslatef( +1.27, +0.20, 0 );
@@ -199,10 +190,10 @@ void display() {
                             glRotatef(angle2[8], 1, 0, 0);
                             glTranslatef( -1.27, -0.20, 0 );
                             ///glTranslatef(teapotX, teapotY, 0);
-                            glColor3f(1,1,0);
                             glmDraw(foot1, GLM_MATERIAL|GLM_TEXTURE);
                         glPopMatrix();
                     glPopMatrix();
+                glPopMatrix();
             glPopMatrix();
 
             glPushMatrix();///¥k¸}
@@ -214,9 +205,7 @@ void display() {
                     glRotatef(angle2[9], 1, 0, 0);
                     glTranslatef( 0.93, -8.60, 0 );
                     ///glTranslatef(teapotX, teapotY, 0);
-                    glColor3f(1,0,0);
                     glmDraw(leg2, GLM_MATERIAL|GLM_TEXTURE);
-                    glPopMatrix();
 
                     glPushMatrix();
                         glTranslatef( -1.00, +4.67, 0 );
@@ -224,9 +213,7 @@ void display() {
                         glRotatef(angle2[10], 1, 0, 0);
                         glTranslatef( 1.00, -4.67, 0 );
                         ///glTranslatef(teapotX, teapotY, 0);
-                        glColor3f(0,1,0);
                         glmDraw(knee2, GLM_MATERIAL|GLM_TEXTURE);
-                        glPopMatrix();
 
                         glPushMatrix();
                             glTranslatef( -1.07, +0.20, 0 );
@@ -234,7 +221,6 @@ void display() {
                             glRotatef(angle2[11], 1, 0, 0);
                             glTranslatef( 1.07, -0.20, 0 );
                             ///glTranslatef(teapotX, teapotY, 0);
-                            glColor3f(1,1,0);
                             glmDraw(foot2, GLM_MATERIAL|GLM_TEXTURE);
                         glPopMatrix();
                     glPopMatrix();
@@ -246,8 +232,8 @@ void display() {
 
 
 
-        ///glColor3f(0,1,0);
-        ///glutSolidTeapot( 0.02 );
+        glColor3f(0,1,0);
+        glutSolidTeapot( 0.02 );
 
     glPopMatrix();
     glutSwapBuffers();
@@ -282,7 +268,7 @@ int main(int argc, char** argv)
     foot1 = glmReadOBJ("model/foot1.obj");
     foot2 = glmReadOBJ("model/foot2.obj");
 
-    ///myTexture("model/galaxy.jpg");
+    myTexture("model/sky.jpg");
     glEnable(GL_DEPTH_TEST);
 
     glutMainLoop();
