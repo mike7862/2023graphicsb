@@ -199,6 +199,7 @@ void display() {
                             glRotatef(angle2[8], 1, 0, 0);
                             glTranslatef( -1.27, -0.20, 0 );
                             ///glTranslatef(teapotX, teapotY, 0);
+                            glColor3f(1,1,0);
                             glmDraw(foot1, GLM_MATERIAL|GLM_TEXTURE);
                         glPopMatrix();
                     glPopMatrix();
@@ -233,6 +234,7 @@ void display() {
                             glRotatef(angle2[11], 1, 0, 0);
                             glTranslatef( 1.07, -0.20, 0 );
                             ///glTranslatef(teapotX, teapotY, 0);
+                            glColor3f(1,1,0);
                             glmDraw(foot2, GLM_MATERIAL|GLM_TEXTURE);
                         glPopMatrix();
                     glPopMatrix();
